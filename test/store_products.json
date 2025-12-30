@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "name": "万利达巨匠JJ15 M+9052",
+    "spec": "15寸 升级版",
+    "series": "巨匠系列",
+    "scene": "户外广场/商铺扩音",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达巨匠9052.jpg",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 2,
+    "name": "万利达Y5+9019",
+    "spec": "5.5寸 月光宝盒系列",
+    "series": "月光宝盒系列",
+    "scene": "家庭/小型店铺",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达Y5+9019.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 3,
+    "name": "万利达巨鼎系列M+9036",
+    "spec": "12寸",
+    "series": "巨鼎系列",
+    "scene": "中型广场/活动现场",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达巨鼎M+9036.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 4,
+    "name": "万利达M+9810",
+    "spec": "网红机",
+    "series": "网红系列",
+    "scene": "直播/户外K歌",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达M+9810.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 5,
+    "name": "戴乐广场音响S15",
+    "spec": "15寸 大功率",
+    "scene": "大型广场/户外演出",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/戴乐广场音响S15.avif",
+    "category": "dai-le-speaker"
+  },
+  {
+    "id": 6,
+    "name": "戴乐广场音响Q70BT",
+    "spec": "蓝牙版 便携",
+    "scene": "小型广场/广场舞",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/戴乐广场音响Q70BT.avif",
+    "category": "dai-le-speaker"
+  },
+  {
+    "id": 7,
+    "name": "声先锋S-120双万能话筒",
+    "spec": "无线 万能适配",
+    "scene": "K歌/演出",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/声先锋S-120双万能话筒.avif",
+    "category": "microphone"
+  },
+  {
+    "id": 8,
+    "name": "万利达9029无线耳麦",
+    "spec": "头戴式 升级版",
+    "scene": "直播/舞台演出",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达9029无线耳麦.avif",
+    "category": "microphone"
+  },
+  {
+    "id": 9,
+    "name": "万利达歌王点歌机M2-22",
+    "spec": "22寸 触摸屏",
+    "scene": "家庭K歌/KTV包间",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达歌王点歌机M2-22.avif",
+    "category": "song-machine"
+  },
+  {
+    "id": 10,
+    "name": "万利达歌王点歌机M9",
+    "spec": "22寸 触摸全格式",
+    "scene": "商用KTV/家庭K歌",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达歌王点歌机M9.avif",
+    "category": "song-machine"
+  },
+  {
+    "id": 11,
+    "name": "万利达电瓶12V20A",
+    "spec": "音响专用电瓶",
+    "scene": "户外音响供电",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达电瓶12V20A.avif",
+    "category": "accessories"
+  },
+  {
+    "id": 12,
+    "name": "万利达加厚音响三脚架",
+    "spec": "通用型 承重强",
+    "scene": "音响固定/摆放",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达加厚音响三脚架.avif",
+    "category": "accessories"
+  },
+  {
+    "id": 13,
+    "name": "万利达L8 M+9015",
+    "spec": "8寸",
+    "scene": "户外运动/广场舞",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达L8+9015.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 14,
+    "name": "万利达L12 M+9017",
+    "spec": "12寸",
+    "scene": "户外运动/广场舞",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达L12+9017.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 15,
+    "name": "万利达巨匠JJ12 M+9050",
+    "spec": "8寸",
+    "scene": "户外旅游/广场舞",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达M+9050.jpg",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 16,
+    "name": "万利达巨匠JJ12 M+9051",
+    "spec": "12寸",
+    "scene": "户外旅游/大型演出",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达M+9051.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 17,
+    "name": "万利达M+K50",
+    "spec": "8寸",
+    "scene": "家庭影院/卡拉OK",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达M+K50.avif",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 18,
+    "name": "万利达Y6+9001",
+    "spec": "12寸 月光宝盒系列",
+    "scene": "家庭/小型店铺",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达Y6+9001.jpg",
+    "category": "wanlida-speaker"
+  },
+  {
+    "id": 19,
+    "name": "万利达风暴系列M+9086",
+    "spec": "8寸",
+    "scene": "广场舞/户外旅游",
+    "priceDesc": "到店询价 / 电话咨询",
+    "imgDesc": "./image/万利达风暴系列9086.jpg",
+    "category": "wanlida-speaker"
+  }
+]
+

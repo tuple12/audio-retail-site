@@ -1,0 +1,699 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>影音设备零售官网 | 万利达/戴乐音响线下专营店</title>
+
+  <!-- Clarity 行为分析 -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "你的Clarity项目ID");
+  </script>  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    /* 基础样式 */
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .snap-y {
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+    }
+
+    section {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* 商品图片占位样式 */
+    .product-img-placeholder {
+      background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 地图容器样式 */
+    .map-container {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      height: 256px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 滚动行为优化 */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* 隐藏滚动条但保留滚动功能 */
+    .snap-y::-webkit-scrollbar {
+      display: none;
+    }
+
+    .snap-y {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Vue挂载容器 -->
+  <div id="app" class="snap-y h-screen overflow-y-auto">
+    <!-- 顶部导航栏 -->
+    <header class="fixed top-0 w-full bg-white shadow z-50">
+      <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
+        <!-- 品牌名称 -->
+        <div class="text-xl font-bold text-indigo-700">{{ companyName }}</div>
+
+        <!-- 移动端菜单按钮 -->
+        <button @click="showMobileMenu = !showMobileMenu" class="md:hidden text-gray-700 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <!-- 桌面端导航 -->
+        <nav class="space-x-6 hidden md:flex items-center">
+          <a href="#home" class="hover:text-indigo-600 transition-colors">首页</a>
+          <a href="#about" class="hover:text-indigo-600 transition-colors">关于我们</a>
+          <a href="#products" class="hover:text-indigo-600 transition-colors">核心产品</a>
+          <!-- <a href="./product-list.html" class="hover:text-indigo-600 transition-colors">全部商品</a> -->
+          <a href="#service" class="hover:text-indigo-600 transition-colors">售后保障</a>
+          <a href="#contact" class="hover:text-indigo-600 transition-colors">联系我们</a>
+          <!-- 管理员入口（隐藏式，仅内部人员知晓） -->
+          <button @click="showAdminLogin = true" class="text-xs text-gray-500 hover:text-indigo-600">管理入口</button>
+        </nav>
+      </div>
+
+      <!-- 移动端导航菜单 -->
+      <div v-if="showMobileMenu" class="md:hidden bg-white shadow-lg px-4 py-2 pb-4">
+        <nav class="flex flex-col space-y-3">
+          <a href="#home" @click="showMobileMenu=false" class="hover:text-indigo-600">首页</a>
+          <a href="#about" @click="showMobileMenu=false" class="hover:text-indigo-600">关于我们</a>
+          <a href="#products" @click="showMobileMenu=false" class="hover:text-indigo-600">核心产品</a>
+          <a href="./product-list.html" @click="showMobileMenu=false" class="hover:text-indigo-600">全部商品</a>
+          <a href="#contact" @click="showMobileMenu=false" class="hover:text-indigo-600">联系我们</a>
+          <a href="#service" @click="showMobileMenu=false" class="hover:text-indigo-600">售后保障</a>
+          <button @click="showAdminLogin = true; showMobileMenu=false" class="text-xs text-gray-500">管理入口</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 首页板块 -->
+    <section id="home" class="pt-24 pb-16 bg-gradient-to-r from-indigo-50 to-purple-50 flex items-center">
+      <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 sm:gap-12 items-center px-4 sm:px-6">
+        <div class="space-y-6">
+          <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">
+            本地8年影音设备专营<br>
+            <span class="text-indigo-700">万利达/戴乐官方授权</span>
+          </h1>
+          <p class="text-gray-700 text-lg">
+            主营音响、点歌机、话筒、功放等影音设备，线下体验+本地配送，正品保障，售后无忧！
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#products"
+              class="bg-indigo-700 text-white px-6 py-3 rounded-lg hover:bg-indigo-800 transition-colors">
+              查看核心产品
+            </a>
+            <a href="#contact"
+              class="bg-white border border-indigo-700 text-indigo-700 px-6 py-3 rounded-lg hover:bg-indigo-50 transition-colors">
+              到店咨询
+            </a>
+          </div>
+          <!-- 核心优势 -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8">
+            <div class="text-center">
+              <div class="text-indigo-700 font-bold text-xl mb-1">正品授权</div>
+              <div class="text-sm text-gray-600">品牌官方认证</div>
+            </div>
+            <div class="text-center">
+              <div class="text-indigo-700 font-bold text-xl mb-1">线下体验</div>
+              <div class="text-sm text-gray-600">到店试用更放心</div>
+            </div>
+            <div class="text-center">
+              <div class="text-indigo-700 font-bold text-xl mb-1">本地配送</div>
+              <div class="text-sm text-gray-600">3公里免费配送</div>
+            </div>
+          </div>
+        </div>
+        <!-- 商品展示图 -->
+        <div
+          class="w-full max-w-md h-80 rounded-2xl bg-white shadow-sm overflow-hidden flex items-center justify-center border border-gray-100">
+          <img src="./image/万利达巨匠9052.jpg" alt="万利达巨匠JJ15 M+9052" class="w-full h-full object-contain" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 关于我们板块 -->
+    <section id="about" class="py-20 bg-white flex items-center">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">关于我们</h2>
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <!-- 企业形象实拍图 -->
+          <div
+            class="w-full h-80 rounded-2xl bg-white shadow-sm overflow-hidden flex items-center justify-center border border-gray-100">
+            <img src="./image/门店.jpg" alt="门店实拍图" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="space-y-4">
+            <p class="text-gray-700">
+              本企业成立于2017年，是本地影音设备零售专营店，拥有万利达、戴乐、声先锋等多个品牌官方授权资质，线下门店面积100㎡，配备专业体验区和售后维修区。
+            </p>
+            <p class="text-gray-700">
+              我们专注于音响、点歌机、话筒、功放等影音设备的零售与售后，坚持“正品保真、价格透明、服务贴心”的经营理念，累计服务本地客户超10000家，是家庭、商铺、广场影音设备的首选供应商。
+            </p>
+            <!-- 资质占位
+          <div class="mt-6 flex gap-4 flex-wrap">
+            <div class="product-img-placeholder w-24 h-32 rounded text-xs text-gray-500">
+              授权证书
+            </div>
+            <div class="product-img-placeholder w-24 h-32 rounded text-xs text-gray-500">
+              营业执照
+            </div>
+          </div> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心产品板块（仅展示爆款） -->
+    <section id="products" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">核心产品</h2>
+        <p class="text-center text-gray-600 mb-10">爆款推荐 · 线下热卖</p>
+
+        <!-- 核心产品列表 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="item in hotProducts" :key="item.id"
+            class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            <div class="h-48 w-full bg-gray-100 overflow-hidden flex items-center justify-center">
+              <img v-if="item.imgDesc" :src="item.imgDesc" :alt="item.name" class="w-full h-full object-contain"
+                loading="lazy" />
+              <div v-else class="product-img-placeholder h-full w-full text-gray-500">
+                暂无图片
+              </div>
+            </div>
+            <div class="p-5 space-y-3">
+              <h3 class="font-bold text-lg text-gray-900">{{ item.name }}</h3>
+              <p class="text-sm text-gray-600">{{ item.spec }}</p>
+              <p class="text-indigo-700 font-semibold">{{ item.priceDesc }}</p>
+              <button @click="viewDetail(item)"
+                class="w-full bg-indigo-700 text-white py-2 rounded-lg hover:bg-indigo-800 transition-colors">
+                查看详情/询价
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 查看全部商品按钮（跳转到独立商品页） -->
+        <div class="text-center mt-10">
+          <a href="./product-list.html"
+            class="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors inline-block">
+            查看全部商品
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 售后保障板块 -->
+    <section id="service" class="py-20 bg-indigo-700 text-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">售后保障</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm hover:bg-white/15 transition-colors">
+            <div class="text-3xl font-bold mb-4">正品保障</div>
+            <p class="text-indigo-100">所有商品均为品牌官方授权正品，假一赔十，支持品牌验货。</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm hover:bg-white/15 transition-colors">
+            <div class="text-3xl font-bold mb-4">本地售后</div>
+            <p class="text-indigo-100">线下门店提供7天无理由退换（未使用），1年免费维修，终身成本价维护。</p>
+          </div>
+          <div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm hover:bg-white/15 transition-colors">
+            <div class="text-3xl font-bold mb-4">配送服务</div>
+            <p class="text-indigo-100">本地3公里内免费配送安装，3-10公里收取基础配送费，支持到店自提。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 联系我们板块 -->
+    <section id="contact" class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">联系我们</h2>
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- 联系方式 -->
+          <div class="space-y-8">
+            <div class="space-y-2">
+              <div class="text-xl font-bold text-gray-900">门店地址</div>
+              <p class="text-gray-700">海南省海口市美兰区下贤二村256号</p>
+              <!-- 地图占位 -->
+              <div class="map-container bg-gray-100 text-gray-500">
+                <img src="./image/map.png" alt="门店地址地图" class="w-full h-full object-contain" loading="lazy" />
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="text-xl font-bold text-gray-900">联系电话</div>
+              <a href="tel:13800138000" class="text-gray-700 hover:text-indigo-700">138-7609-7617（微信同号）</a>
+            </div>
+            <div class="space-y-2">
+              <div class="text-xl font-bold text-gray-900">营业时间</div>
+              <p class="text-gray-700">周一至周日 9:00 - 21:00（全年无休）</p>
+            </div>
+            <!-- 微信二维码 -->
+            <div class="space-y-2">
+              <div class="text-xl font-bold text-gray-900">微信咨询</div>
+              <div class="w-40 h-40 rounded overflow-hidden bg-gray-50">
+                <img src="./image/二维码.jpg" alt="微信咨询二维码" class="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+          <!-- 咨询表单 -->
+          <form class="bg-gray-50 rounded-xl p-8 space-y-4" @submit.prevent="submitForm">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">在线咨询（工作日2小时内回复）</h3>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">姓名</label>
+              <input v-model="form.name" placeholder="请输入您的姓名"
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">联系电话</label>
+              <input v-model="form.phone" placeholder="请输入您的手机号"
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">咨询商品</label>
+              <input v-model="form.product" placeholder="例如：万利达巨匠JJ15"
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">咨询内容</label>
+              <textarea v-model="form.msg" placeholder="请描述您的需求/问题" rows="4"
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+            <button type="submit"
+              class="w-full bg-indigo-700 text-white py-3 rounded-lg hover:bg-indigo-800 transition-colors">
+              提交咨询
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 商品详情弹窗 -->
+    <div v-if="showModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl w-full max-w-lg overflow-hidden">
+        <div class="h-56 w-full bg-gray-100 overflow-hidden flex items-center justify-center">
+          <img v-if="selectedProduct.imgDesc" :src="selectedProduct.imgDesc" :alt="selectedProduct.name"
+            class="w-full h-full object-contain" loading="lazy" />
+          <div v-else class="product-img-placeholder h-full w-full text-gray-500">
+            暂无图片
+          </div>
+        </div>
+        <div class="p-6 space-y-4">
+          <h3 class="text-2xl font-bold text-gray-900">{{ selectedProduct.name }}</h3>
+          <p class="text-gray-600"><strong>规格：</strong>{{ selectedProduct.spec }}</p>
+          <p class="text-gray-600"><strong>系列：</strong>{{ selectedProduct.series || '无' }}</p>
+          <p class="text-gray-600"><strong>适配场景：</strong>{{ selectedProduct.scene || '通用' }}</p>
+          <p class="text-indigo-700 font-semibold">{{ selectedProduct.priceDesc }}</p>
+          <div class="pt-4 border-t border-gray-200 flex gap-4">
+            <a :href="'tel:13876097617'"
+              class="inline-flex items-center gap-2 bg-indigo-700 text-white px-6 py-2 rounded-lg hover:bg-indigo-800 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              电话咨询：138-7609-7617
+            </a>
+            <button @click="showModal=false"
+              class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+              关闭
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 管理员登录弹窗 -->
+    <div v-if="showAdminLogin" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-xl w-full max-w-sm p-6">
+        <h3 class="text-xl font-bold text-center mb-4">管理员登录</h3>
+        <input v-model="adminPwd" type="password" placeholder="请输入管理员密码"
+          class="w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button @click="checkAdminPwd"
+          class="w-full bg-indigo-700 text-white py-2 rounded-lg hover:bg-indigo-800 transition-colors">登录</button>
+        <button @click="showAdminLogin=false; adminPwd=''" class="w-full mt-2 text-gray-500 py-2">取消</button>
+        <p class="text-xs text-gray-400 mt-2 text-center">默认密码：123456（请及时修改）</p>
+      </div>
+    </div>
+
+    <!-- 商品管理后台 -->
+    <div v-if="isAdmin" class="fixed inset-0 bg-white z-50 p-6 overflow-auto">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">商品管理后台</h2>
+          <button @click="logoutAdmin"
+            class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">退出管理</button>
+        </div>
+
+        <!-- 添加商品表单 -->
+        <div class="bg-gray-50 rounded-xl p-6 mb-8">
+          <h3 class="text-xl font-bold mb-4">添加新商品</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">商品名称 *</label>
+              <input v-model="newProduct.name" placeholder="如：万利达巨匠JJ15 M+9052"
+                class="w-full p-2 rounded-lg border border-gray-300">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">规格 *</label>
+              <input v-model="newProduct.spec" placeholder="如：15寸 升级版"
+                class="w-full p-2 rounded-lg border border-gray-300">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">商品分类 *</label>
+              <select v-model="newProduct.category" class="w-full p-2 rounded-lg border border-gray-300">
+                <option value="wanlida-speaker">万利达音响</option>
+                <option value="dai-le-speaker">戴乐广场音响</option>
+                <option value="microphone">话筒/耳麦</option>
+                <option value="song-machine">点歌机</option>
+                <option value="accessories">配件/耗材</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">图片描述</label>
+              <input v-model="newProduct.imgDesc" placeholder="如：万利达JJ15 15寸音响"
+                class="w-full p-2 rounded-lg border border-gray-300">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">系列（选填）</label>
+              <input v-model="newProduct.series" placeholder="如：巨匠系列"
+                class="w-full p-2 rounded-lg border border-gray-300">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">适配场景 *</label>
+              <input v-model="newProduct.scene" placeholder="如：户外广场/商铺扩音"
+                class="w-full p-2 rounded-lg border border-gray-300">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-700 mb-1">价格说明</label>
+            <input v-model="newProduct.priceDesc" placeholder="如：到店询价 / 电话咨询"
+              class="w-full p-2 rounded-lg border border-gray-300" value="到店询价 / 电话咨询">
+          </div>
+          <button @click="addProduct"
+            class="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">添加商品</button>
+        </div>
+
+        <!-- 商品列表（可编辑/删除） -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">ID</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">商品名称</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">规格</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">分类</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">操作</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr v-for="item in allProducts" :key="item.id">
+                  <td class="px-6 py-4 text-sm text-gray-700">{{ item.id }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700">{{ item.name }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700">{{ item.spec }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700">
+                    <span v-if="item.category === 'wanlida-speaker'">万利达音响</span>
+                    <span v-if="item.category === 'dai-le-speaker'">戴乐广场音响</span>
+                    <span v-if="item.category === 'microphone'">话筒/耳麦</span>
+                    <span v-if="item.category === 'song-machine'">点歌机</span>
+                    <span v-if="item.category === 'accessories'">配件/耗材</span>
+                  </td>
+                  <td class="px-6 py-4 text-sm">
+                    <button @click="editProduct(item)" class="text-blue-600 hover:text-blue-800 mr-3">编辑</button>
+                    <button @click="deleteProduct(item.id)" class="text-red-600 hover:text-red-800">删除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-gray-300 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <div class="text-xl font-bold text-white mb-4">{{ companyName }}</div>
+            <p class="text-sm text-gray-400">本地影音设备专营，正品保障，用心服务每一位客户</p>
+          </div>
+          <div>
+            <div class="font-bold text-white mb-4">快速导航</div>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <a href="#home" class="text-gray-400 hover:text-white">首页</a>
+              <a href="#about" class="text-gray-400 hover:text-white">关于我们</a>
+              <a href="#products" class="text-gray-400 hover:text-white">核心产品</a>
+              <a href="./product-list.html" class="text-gray-400 hover:text-white">全部商品</a>
+              <a href="#contact" class="text-gray-400 hover:text-white">联系我们</a>
+              <a href="#service" class="text-gray-400 hover:text-white">售后保障</a>
+            </div>
+          </div>
+          <div>
+            <div class="font-bold text-white mb-4">联系我们</div>
+            <div class="text-sm space-y-2 text-gray-400">
+              <div>地址：海南省海口市美兰区下贤二村256号</div>
+              <div>电话：138-7609-7617</div>
+              <div>营业时间：9:00 - 21:00（全年无休）</div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-sm text-gray-500 pt-8 border-t border-gray-800">
+          © 2025 {{ companyName }} 版权所有 | 万利达/戴乐品牌授权经销商
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Vue核心逻辑 -->
+  <script>
+    const { createApp } = Vue
+
+    // 创建Vue应用
+    createApp({
+      data() {
+        return {
+          // 企业基础信息
+          companyName: '万利达影音设备专营店',
+          // 移动端菜单控制
+          showMobileMenu: false,
+          // 商品分类
+          categories: [
+            { id: 'all', name: '全部商品' },
+            { id: 'wanlida-speaker', name: '万利达音响' },
+            { id: 'dai-le-speaker', name: '戴乐广场音响' },
+            { id: 'microphone', name: '话筒/耳麦' },
+            { id: 'song-machine', name: '点歌机' },
+            { id: 'accessories', name: '配件/耗材' }
+          ],
+          // 商品相关
+          allProducts: [],
+          hotProducts: [],
+          showModal: false,
+          selectedProduct: {},
+          // 咨询表单
+          form: {
+            name: '',
+            phone: '',
+            product: '',
+            msg: ''
+          },
+          // 管理员相关
+          showAdminLogin: false,
+          adminPwd: '',
+          isAdmin: false,
+          adminPassword: '123456', // 管理员密码，可自行修改
+          // 新增商品表单
+          newProduct: {
+            id: '',
+            name: '',
+            spec: '',
+            category: 'wanlida-speaker',
+            series: '',
+            scene: '',
+            priceDesc: '到店询价 / 电话咨询',
+            imgDesc: ''
+          }
+        }
+      },
+      mounted() {
+        // 页面加载时读取本地存储的商品数据
+        this.loadProducts()
+        // 核心产品取前3款
+        this.hotProducts = this.allProducts.slice(0, 3)
+      },
+      methods: {
+        // 加载本地存储的商品数据
+        loadProducts() {
+          const storedProducts = localStorage.getItem('store_products')
+          // 初始默认商品（无数据时填充）
+          const defaultProducts = [
+            {
+              id: 1,
+              name: '万利达巨匠JJ15 M+9052',
+              spec: '15寸 升级版',
+              series: '巨匠系列',
+              scene: '户外广场/商铺扩音',
+              priceDesc: '到店询价 / 电话咨询',
+              imgDesc: '万利达JJ15 15寸音响',
+              category: 'wanlida-speaker'
+            },
+            {
+              id: 2,
+              name: '戴乐广场音响S15',
+              spec: '15寸 大功率',
+              scene: '大型广场/户外演出',
+              priceDesc: '到店询价 / 电话咨询',
+              imgDesc: '戴乐S15 广场音响',
+              category: 'dai-le-speaker'
+            },
+            {
+              id: 3,
+              name: '声先锋S-189双万能话筒',
+              spec: '无线 万能适配',
+              scene: 'K歌/演出',
+              priceDesc: '到店询价 / 电话咨询',
+              imgDesc: '声先锋S-189 双话筒',
+              category: 'microphone'
+            }
+          ]
+          // 读取本地数据或使用默认数据
+          this.allProducts = storedProducts ? JSON.parse(storedProducts) : defaultProducts
+          // 保存到本地（确保数据存在）
+          this.saveProducts()
+        },
+        // 保存商品到本地存储
+        saveProducts() {
+          localStorage.setItem('store_products', JSON.stringify(this.allProducts))
+          // 更新核心产品列表
+          this.hotProducts = this.allProducts.slice(0, 3)
+        },
+        // 查看商品详情
+        viewDetail(item) {
+          this.selectedProduct = item
+          this.showModal = true
+        },
+        // 提交咨询表单
+        submitForm() {
+          if (!this.form.name || !this.form.phone) {
+            alert('请填写姓名和联系电话！')
+            return
+          }
+          alert(`咨询提交成功！我们会尽快联系您（姓名：${this.form.name}，电话：${this.form.phone}）`)
+          // 重置表单
+          this.form = { name: '', phone: '', product: '', msg: '' }
+        },
+        // 验证管理员密码
+        checkAdminPwd() {
+          if (!this.adminPwd) {
+            alert('请输入管理员密码！')
+            return
+          }
+          if (this.adminPwd === this.adminPassword) {
+            this.isAdmin = true
+            this.showAdminLogin = false
+            this.adminPwd = ''
+            alert('管理员登录成功！')
+          } else {
+            alert('密码错误！请重新输入')
+            this.adminPwd = ''
+          }
+        },
+        // 退出管理员
+        logoutAdmin() {
+          this.isAdmin = false
+          alert('已退出管理员模式')
+        },
+        // 添加新商品
+        addProduct() {
+          // 验证必填项
+          if (!this.newProduct.name || !this.newProduct.spec || !this.newProduct.scene) {
+            alert('商品名称、规格、适配场景为必填项！')
+            return
+          }
+          // 生成唯一ID（时间戳）
+          this.newProduct.id = Date.now()
+          // 添加到商品列表
+          this.allProducts.push({ ...this.newProduct })
+          // 保存并重置表单
+          this.saveProducts()
+          this.newProduct = {
+            id: '',
+            name: '',
+            spec: '',
+            category: 'wanlida-speaker',
+            series: '',
+            scene: '',
+            priceDesc: '到店询价 / 电话咨询',
+            imgDesc: ''
+          }
+          alert('商品添加成功！')
+        },
+        // 编辑商品
+        editProduct(item) {
+          const newName = prompt('请修改商品名称', item.name)
+          const newSpec = prompt('请修改商品规格', item.spec)
+          const newScene = prompt('请修改适配场景', item.scene)
+
+          if (newName && newName.trim()) item.name = newName.trim()
+          if (newSpec && newSpec.trim()) item.spec = newSpec.trim()
+          if (newScene && newScene.trim()) item.scene = newScene.trim()
+
+          // 保存修改
+          this.saveProducts()
+          alert('商品修改成功！')
+        },
+        // 删除商品
+        deleteProduct(id) {
+          if (confirm('确定要删除该商品吗？删除后不可恢复！')) {
+            this.allProducts = this.allProducts.filter(p => p.id !== id)
+            this.saveProducts()
+            alert('商品删除成功！')
+          }
+        }
+      }
+    }).mount('#app')
+  </script>
+
+</body>
+
+</html>

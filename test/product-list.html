@@ -1,0 +1,273 @@
+<!-- product-list.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>全部商品 | XX影音设备专营店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    /* 基础样式 */
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 0; }
+    .product-img-placeholder {
+      background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 滚动行为优化 */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- Vue挂载容器 -->
+<div id="productApp" class="min-h-screen flex flex-col">
+  <!-- 顶部导航栏（与官网保持一致） -->
+  <header class="sticky top-0 w-full bg-white shadow z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
+      <!-- 品牌名称 -->
+      <div class="text-xl font-bold text-indigo-700">万利达影音设备专营店</div>
+      
+      <!-- 导航菜单 -->
+      <nav class="space-x-6 hidden md:flex items-center">
+        <a href="./index.html#home" class="hover:text-indigo-600 transition-colors">返回首页</a>
+        <a href="./index.html#about" class="hover:text-indigo-600 transition-colors">关于我们</a>
+        <a href="./index.html#contact" class="hover:text-indigo-600 transition-colors">联系我们</a>
+        <a href="./index.html#service" class="hover:text-indigo-600 transition-colors">售后保障</a>
+        <!-- 管理员入口 -->
+        <button @click="showAdminLogin = true" class="text-xs text-gray-500 hover:text-indigo-600">管理入口</button>
+      </nav>
+      
+      <!-- 移动端返回按钮 -->
+      <button class="md:hidden text-gray-700 focus:outline-none" onclick="window.location.href='./index.html#home'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 商品列表主体 -->
+  <main class="flex-grow py-16 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+    <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">全部商品</h2>
+    <p class="text-center text-gray-600 mb-10">全品类影音设备 · 正品保障</p>
+
+    <!-- 分类筛选 -->
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
+      <button 
+        v-for="c in categories" 
+        :key="c.id" 
+        @click="activeCategory = c.id"
+        :class="[
+          'px-4 py-2 rounded-lg transition-colors',
+          activeCategory === c.id 
+            ? 'bg-indigo-700 text-white' 
+            : 'bg-white border border-gray-200 hover:bg-gray-100'
+        ]"
+      >
+        {{ c.name }}
+      </button>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div 
+        v-for="item in filteredProducts" 
+        :key="item.id" 
+        class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100 cursor-pointer"
+        @click="viewDetail(item)"
+      >
+        <div class="h-48 w-full bg-gray-100 overflow-hidden flex items-center justify-center">
+          <img 
+            v-if="item.imgDesc" 
+            :src="item.imgDesc" 
+            :alt="item.name" 
+            class="w-full h-full object-contain" 
+            loading="lazy"
+          />
+          <div v-else class="product-img-placeholder h-full w-full text-gray-500">
+            暂无图片
+          </div>
+        </div>
+        <div class="p-5 space-y-3">
+          <h3 class="font-bold text-lg text-gray-900">{{ item.name }}</h3>
+          <p class="text-sm text-gray-600">{{ item.spec }}</p>
+          <p class="text-sm text-gray-600"><strong>适配场景：</strong>{{ item.scene }}</p>
+          <p class="text-indigo-700 font-semibold">{{ item.priceDesc }}</p>
+          <a class="w-full bg-indigo-700 text-white py-2 rounded-lg hover:bg-indigo-800 transition-colors inline-block text-center">
+            详情查看/询价
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 空数据提示 -->
+    <div v-if="filteredProducts.length === 0" class="text-center py-16 text-gray-500">
+      <p class="text-xl">暂无该分类下的商品</p>
+      <button @click="activeCategory = 'all'" class="mt-4 text-indigo-600 hover:underline">查看全部商品</button>
+    </div>
+  </main>
+
+  <!-- 商品详情弹窗 -->
+  <div v-if="showModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl w-full max-w-lg overflow-hidden shadow-xl">
+      <div class="h-56 w-full bg-gray-100 overflow-hidden flex items-center justify-center">
+        <img 
+          v-if="selectedProduct.imgDesc" 
+          :src="selectedProduct.imgDesc" 
+          :alt="selectedProduct.name" 
+          class="w-full h-full object-contain" 
+          loading="lazy"
+        />
+        <div v-else class="product-img-placeholder h-full w-full text-gray-500">
+          暂无图片
+        </div>
+      </div>
+      <div class="p-6 space-y-4">
+        <h3 class="text-2xl font-bold text-gray-900">{{ selectedProduct.name }}</h3>
+        <p class="text-gray-600"><strong>规格：</strong>{{ selectedProduct.spec }}</p>
+        <p class="text-gray-600"><strong>系列：</strong>{{ selectedProduct.series || '无' }}</p>
+        <p class="text-gray-600"><strong>适配场景：</strong>{{ selectedProduct.scene || '通用' }}</p>
+        <p class="text-indigo-700 font-semibold">{{ selectedProduct.priceDesc }}</p>
+        <div class="pt-4 border-t border-gray-200 flex gap-4 flex-wrap">
+          <a :href="'tel:13876097617'" class="inline-flex items-center gap-2 bg-indigo-700 text-white px-6 py-2 rounded-lg hover:bg-indigo-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            电话咨询：138-7609-7617
+          </a>
+          <button @click.stop="showModal=false" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+            关闭
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理员登录弹窗（与官网共用逻辑） -->
+  <div v-if="showAdminLogin" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl w-full max-w-sm p-6">
+      <h3 class="text-xl font-bold text-center mb-4">管理员登录</h3>
+      <input v-model="adminPwd" type="password" placeholder="请输入管理员密码" class="w-full p-3 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <button @click="checkAdminPwd" class="w-full bg-indigo-700 text-white py-2 rounded-lg hover:bg-indigo-800 transition-colors">登录</button>
+      <button @click="showAdminLogin=false; adminPwd=''" class="w-full mt-2 text-gray-500 py-2">取消</button>
+      <p class="text-xs text-gray-400 mt-2 text-center">默认密码：123456</p>
+    </div>
+  </div>
+
+  <!-- 页脚（与官网保持一致） -->
+  <footer class="bg-gray-900 text-gray-300 py-8 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="text-xl font-bold text-white mb-4">万利达影音设备专营店</div>
+          <p class="text-sm text-gray-400">本地影音设备专营，正品保障，用心服务每一位客户</p>
+        </div>
+        <div>
+          <div class="font-bold text-white mb-4">快速导航</div>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <a href="./index.html#home" class="text-gray-400 hover:text-white">首页</a>
+            <a href="./index.html#about" class="text-gray-400 hover:text-white">关于我们</a>
+            <a href="./index.html#products" class="text-gray-400 hover:text-white">核心产品</a>
+            <a href="./product-list.html" class="text-gray-400 hover:text-white">全部商品</a>
+            <a href="./index.html#contact" class="text-gray-400 hover:text-white">联系我们</a>
+            <a href="./index.html#service" class="text-gray-400 hover:text-white">售后保障</a>
+          </div>
+        </div>
+        <div>
+          <div class="font-bold text-white mb-4">联系我们</div>
+          <div class="text-sm space-y-2 text-gray-400">
+            <div>地址：海南省海口市美兰区下贤二村256号</div>
+            <div>电话：138-7609-7617</div>
+            <div>营业时间：9:00 - 21:00（全年无休）</div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center text-sm text-gray-500 pt-8 border-t border-gray-800">
+        © 2025 万利达影音设备专营店 版权所有 | 万利达/戴乐品牌授权经销商
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Vue核心逻辑 -->
+<script>
+const { createApp } = Vue
+
+// 创建Vue应用
+createApp({
+  data() {
+    return {
+      // 商品分类
+      categories: [
+        { id: 'all', name: '全部商品' },
+        { id: 'wanlida-speaker', name: '万利达音响' },
+        { id: 'dai-le-speaker', name: '戴乐广场音响' },
+        { id: 'microphone', name: '话筒/耳麦' },
+        { id: 'song-machine', name: '点歌机' },
+        { id: 'accessories', name: '配件/耗材' }
+      ],
+      activeCategory: 'all',
+      allProducts: [],
+      showModal: false,
+      selectedProduct: {},
+      // 管理员相关
+      showAdminLogin: false,
+      adminPwd: '',
+      adminPassword: '123456'
+    }
+  },
+  computed: {
+    // 筛选商品
+    filteredProducts() {
+      if (this.activeCategory === 'all') return this.allProducts
+      return this.allProducts.filter(p => p.category === this.activeCategory)
+    }
+  },
+  async mounted() {
+    // 优先从 JSON 文件读取商品数据
+    try {
+      const response = await fetch('./store_products.json')
+      if (response.ok) {
+        this.allProducts = await response.json()
+        // 同时保存到 localStorage 作为备份
+        localStorage.setItem('store_products', JSON.stringify(this.allProducts))
+      } else {
+        throw new Error('无法加载商品数据文件')
+      }
+    } catch (error) {
+      console.warn('从 JSON 文件加载失败，尝试从 localStorage 读取:', error)
+      // 如果 JSON 文件加载失败，尝试从 localStorage 读取
+      const storedProducts = localStorage.getItem('store_products')
+      this.allProducts = storedProducts ? JSON.parse(storedProducts) : []
+    }
+  },
+  methods: {
+    viewDetail(item) {
+      this.selectedProduct = item
+      this.showModal = true
+    },
+    // 验证管理员密码（跳转到官网管理后台）
+    checkAdminPwd() {
+      if (this.adminPwd === this.adminPassword) {
+        this.showAdminLogin = false
+        // 跳转到官网并自动触发管理员登录
+        window.location.href = './index.html#admin'
+        // 存储登录状态（供官网读取）
+        localStorage.setItem('admin_login_temp', 'true')
+      } else {
+        alert('密码错误！')
+        this.adminPwd = ''
+      }
+    }
+  }
+}).mount('#productApp')
+</script>
+
+</body>
+</html>
